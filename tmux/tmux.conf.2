@@ -5,6 +5,13 @@ unbind r
 bind r set -g status off \; source-file ~/.tmux.conf \; set -g status on \; display-message "Tmux config reloaded!"
 
 # ----------------------------
+# Pane and window numbers
+# ----------------------------
+set -g base-index 1
+setw -g pane-base-index 1
+set -g renumber-windows on
+
+# ----------------------------
 # Prefix Key
 # ----------------------------
 unbind C-b                  # Unbind default prefix
@@ -25,13 +32,16 @@ bind j select-pane -D
 bind k select-pane -U
 bind l select-pane -R
 
+# --- Zoom Pane ---
+bind 0 resize-pane -Z
+
 # ----------------------------
 # Window Management
 # ----------------------------
 unbind c                    # Unbind default new window
 bind n new-window           # Create new window
-bind d kill-window          # Delete current window
 bind i next-window          # Next window
+bind u previous-window      # Previous window
 
 # ----------------------------
 # Key Bindings List
@@ -42,15 +52,6 @@ bind ? list-keys
 # Clipboard
 # ----------------------------
 set-option -g set-clipboard on
-
-# ----------------------------
-# TPM Plugins
-# ----------------------------
-set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'dracula/tmux'
-
-# Initialize TPM (keep at the very bottom of plugin section)
-run '~/.tmux/plugins/tpm/tpm'
 
 # ----------------------------
 # Status Bar
@@ -70,8 +71,47 @@ set -g status-right ""        # Empty right side
 # Window Titles
 # ----------------------------
 # Active window
-setw -g window-status-current-format "#[fg=#F8F8F2,bg=#6272A4] #I #W "
+setw -g window-status-current-format "#[fg=#F8F8F2,bg=#6272A4] #I #W #{?window_zoomed_flag,[Z],} "
 
 # Inactive windows
-setw -g window-status-format "#[fg=#6272A4,bg=#282A36] #I #W "
+setw -g window-status-format "#[fg=#6272A4,bg=#282A36] #I #W #{?window_zoomed_flag,[Z],} "
+
+# ============================
+# Vi Mode
+# ============================
+set-window-option -g mode-keys vi
+
+# Start selection with v (like Vim)
+# bind-key -T copy-mode-vi v send-keys -X begin-selection
+
+# Copy with y (and exit copy mode)
+# bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+
+# Paste with prefix + p
+# bind p paste-buffer
+
+# ============================
+# Mouse Support
+# ============================
+set -g mouse on             # Enable mouse (resize panes, switch windows, scroll)
+setw -g mode-keys vi        # Ensure vi mode for scrolling
+
+# ----------------------------
+# Misc
+# ----------------------------
+setw -g automatic-rename on
+
+# ============================
+# Plugins
+# ============================
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+
+# Continuum config
+set -g @continuum-restore 'on'
+set -g @continuum-save-interval '5'
+
+# Initialize TPM (keep at bottom of plugin section)
+run '~/.tmux/plugins/tpm/tpm'
 
