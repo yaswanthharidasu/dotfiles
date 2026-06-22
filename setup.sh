@@ -42,6 +42,9 @@ brew install tmux
 curl -fsSL https://raw.githubusercontent.com/yaswanthharidasu/dotfiles/master/tmux/tmux.conf \
   -o ~/.tmux.conf
 
+# Install tmux plugin manager (tpm)
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 # ==============================================================================
 # Zoxide - Smart directory navigation (replaces cd)
 # ==============================================================================
